@@ -3,59 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Notion × Claude Code 連携ガイド（トークン方式メイン）｜KINO BIM</title>
+<title>Notion × Claude Code 連携ガイド｜KINO BIM</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#2b2723;
-    --ink-soft:#5f574e;
-    --paper:#f6f3ec;
-    --card:#ffffff;
-    --line:#e4ddd0;
-    --sage:#5a7a5a;
-    --sage-dark:#46603f;
-    --sage-med:#8baa88;
-    --sage-wash:#e8f0e7;
-    --ok:#2e7d5b;
-    --ok-bg:#e9f5ee;
-    --ng:#b23b3b;
-    --ng-bg:#fbeeee;
-    --amber:#b7791f;
-    --amber-bg:#fdf3e2;
-    --blue:#2b6cb0;
-    --blue-bg:#e9f1fb;
+    --ink:#2b2723;--ink-soft:#5f574e;--paper:#f6f3ec;--card:#ffffff;--line:#e4ddd0;
+    --sage:#5a7a5a;--sage-dark:#46603f;--sage-med:#8baa88;--sage-wash:#e8f0e7;
+    --ok:#2e7d5b;--ok-bg:#e9f5ee;--ng:#b23b3b;--ng-bg:#fbeeee;
+    --amber:#b7791f;--amber-bg:#fdf3e2;--blue:#2b6cb0;--blue-bg:#e9f1fb;
     --shadow:0 4px 20px rgba(60,50,35,.08);
   }
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
-  body{
-    margin:0;
-    font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",system-ui,sans-serif;
-    color:var(--ink);background:var(--paper);line-height:1.85;font-size:16px;
-    -webkit-font-smoothing:antialiased;
-  }
+  body{margin:0;font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",system-ui,sans-serif;
+    color:var(--ink);background:var(--paper);line-height:1.85;font-size:16px;-webkit-font-smoothing:antialiased;}
   .wrap{max-width:900px;margin:0 auto;padding:0 20px 80px;}
   h1,h2,h3{font-family:"Poppins","Noto Sans JP",sans-serif;}
 
-  /* hero */
-  header.hero{background:linear-gradient(140deg,#3a4a37 0%,#46603f 55%,#5a7a5a 100%);
-    color:#fff;padding:56px 24px 48px;text-align:center;position:relative;overflow:hidden;}
+  header.hero{background:linear-gradient(140deg,#3a4a37 0%,#46603f 55%,#5a7a5a 100%);color:#fff;
+    padding:56px 24px 48px;text-align:center;position:relative;overflow:hidden;}
   header.hero::after{content:"";position:absolute;right:-70px;bottom:-70px;width:240px;height:240px;
     background:radial-gradient(circle,var(--sage-med) 0%,transparent 70%);opacity:.4;}
-  .badge{display:inline-block;font-size:12.5px;letter-spacing:.14em;
-    background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.28);
-    padding:5px 15px;border-radius:999px;margin-bottom:18px;}
-  header.hero h1{font-size:29px;margin:0 0 12px;line-height:1.45;font-weight:700;letter-spacing:.01em;}
+  .badge{display:inline-block;font-size:12.5px;letter-spacing:.14em;background:rgba(255,255,255,.13);
+    border:1px solid rgba(255,255,255,.28);padding:5px 15px;border-radius:999px;margin-bottom:18px;}
+  header.hero h1{font-size:29px;margin:0 0 12px;line-height:1.45;font-weight:700;}
   header.hero h1 .x{color:#d4e2d3;padding:0 5px;}
-  header.hero p{margin:0;color:#dfe9dc;font-size:15px;}
+  header.hero p{margin:0;color:#dfe9dc;font-size:14.5px;}
   .meta{margin-top:20px;font-size:12.5px;color:#bccdb8;}
 
-  /* demo banner */
   .demo-banner{background:var(--sage-wash);border:1px solid var(--sage-med);border-radius:14px;
     padding:16px 20px;margin-top:28px;display:flex;gap:14px;align-items:flex-start;}
-  .demo-banner .ico{font-size:26px;line-height:1.2;}
+  .demo-banner .ico{font-size:26px;}
   .demo-banner b{color:var(--sage-dark);}
   .demo-banner p{margin:2px 0 0;font-size:14px;color:var(--ink-soft);}
 
@@ -64,6 +44,7 @@
   .sec-num{flex:0 0 auto;width:38px;height:38px;border-radius:11px;background:var(--sage);color:#fff;
     display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;box-shadow:var(--shadow);}
   .sec-head h2{font-size:21px;margin:0;font-weight:700;}
+  .star{margin-left:8px;font-size:12px;background:var(--amber);color:#fff;border-radius:999px;padding:2px 10px;vertical-align:middle;letter-spacing:.04em;}
 
   .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px 26px;box-shadow:var(--shadow);}
   .card + .card{margin-top:16px;}
@@ -71,48 +52,82 @@
   strong{color:var(--sage-dark);font-weight:700;}
   .muted{color:var(--ink-soft);font-size:13.5px;}
   .verdict{font-size:18px;font-weight:700;border-left:5px solid var(--sage);padding:4px 0 4px 16px;margin:0 0 4px;}
+  h3.mini{font-size:15.5px;margin:22px 0 8px;font-family:"Noto Sans JP";color:var(--sage-dark);}
 
-  /* comparison table */
+  /* Excel vs Notion */
+  .vs-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:6px;}
+  .vs-card{border:1px solid var(--line);border-radius:12px;padding:18px;background:#fff;}
+  .vs-card h4{margin:0 0 12px;font-size:15px;font-family:"Noto Sans JP";}
+  .vs-card.excel h4{color:var(--ink-soft);} .vs-card.notion h4{color:var(--sage-dark);}
+  .cellgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;}
+  .cellgrid span{border:1px solid var(--line);background:#faf8f3;height:20px;border-radius:3px;}
+  .vs-card .note{font-size:13px;color:var(--ink-soft);margin-top:11px;}
+
+  /* concept steps */
+  .concept-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;}
+  .concept-step{flex:1 1 0;min-width:140px;background:var(--sage-wash);border:1px solid var(--sage-med);
+    border-radius:11px;padding:14px;text-align:center;}
+  .concept-step .ico{font-size:24px;}
+  .concept-step .t{font-weight:700;margin-top:6px;font-size:14px;color:var(--sage-dark);}
+  .concept-step .d{font-size:12.5px;color:var(--ink-soft);margin-top:3px;line-height:1.6;}
+  .concept-arrow{color:var(--sage);font-size:20px;font-weight:800;}
+
+  /* mock notion box */
+  .nbox{border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow);background:#fff;margin-top:6px;}
+  .nbox .nbox-ttl{background:#f3efe7;padding:12px 16px;font-weight:700;border-bottom:1px solid var(--line);font-size:14.5px;}
+  .nbox .prop{display:flex;gap:12px;padding:9px 16px;border-bottom:1px solid #f1ece2;font-size:13.5px;align-items:center;}
+  .nbox .prop:last-child{border-bottom:none;}
+  .nbox .prop .k{flex:0 0 96px;color:var(--ink-soft);}
+  .chip{display:inline-block;background:var(--sage-wash);border:1px solid var(--sage-med);border-radius:6px;
+    padding:1px 9px;font-size:12.5px;color:var(--sage-dark);}
+  .chip.file{background:var(--amber-bg);border-color:#ecd5a3;color:var(--amber);}
+  .chip.url{background:var(--blue-bg);border-color:#c5dbf2;color:var(--blue);}
+  .chip.rel{background:#f3e9f5;border-color:#dcc3e2;color:#8347a0;}
+
+  /* tables */
   table{width:100%;border-collapse:collapse;font-size:14px;margin-top:4px;}
   th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top;}
   thead th{background:var(--sage);color:#fff;font-weight:700;font-size:13.5px;}
   thead th.col-token{background:var(--sage-dark);}
   tbody td:first-child{background:#f3efe7;font-weight:600;width:24%;}
-  td.token{background:var(--sage-wash);}
-  td b{color:var(--sage-dark);}
-  .axis{font-size:13.5px;}
+  td.token{background:var(--sage-wash);} td b{color:var(--sage-dark);}
 
-  /* two methods can-do/cannot */
+  /* methods */
   .methods{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
   .method{border-radius:14px;border:2px solid var(--line);background:#fff;padding:20px;position:relative;}
   .method.best{border-color:var(--sage);box-shadow:0 6px 22px rgba(90,122,90,.16);}
-  .method .tag{position:absolute;top:-12px;left:18px;font-size:11.5px;font-weight:700;color:#fff;
-    padding:3px 12px;border-radius:999px;letter-spacing:.04em;}
-  .method.basic .tag{background:var(--ink-soft);}
-  .method.best .tag{background:var(--sage);}
-  .method h3{margin:4px 0 14px;font-size:17px;}
+  .method .tag{position:absolute;top:-12px;left:18px;font-size:11.5px;font-weight:700;color:#fff;padding:3px 12px;border-radius:999px;}
+  .method.basic .tag{background:var(--ink-soft);} .method.best .tag{background:var(--sage);}
+  .method h3{margin:4px 0 14px;font-size:16.5px;}
   .can b,.cannot-b{display:block;font-size:12.5px;letter-spacing:.06em;margin:0 0 6px;font-weight:700;}
   .can b{color:var(--ok);} .cannot-b{color:var(--ng);}
   .can ul,.cannot ul{margin:0 0 14px;padding-left:18px;font-size:13.5px;color:var(--ink-soft);}
-  .can ul li,.cannot ul li{margin-bottom:5px;}
-  .cannot ul{margin-bottom:0;}
+  .can ul li,.cannot ul li{margin-bottom:5px;} .cannot ul{margin-bottom:0;}
 
   /* steps */
   .steps{counter-reset:step;list-style:none;padding:0;margin:0;}
   .steps>li{position:relative;padding:0 0 20px 54px;}
-  .steps>li::before{counter-increment:step;content:counter(step);position:absolute;left:0;top:0;
-    width:36px;height:36px;border-radius:50%;background:var(--sage);color:#fff;font-weight:700;font-size:16px;
-    display:flex;align-items:center;justify-content:center;}
+  .steps>li::before{counter-increment:step;content:counter(step);position:absolute;left:0;top:0;width:36px;height:36px;
+    border-radius:50%;background:var(--sage);color:#fff;font-weight:700;font-size:16px;display:flex;align-items:center;justify-content:center;}
   .steps>li::after{content:"";position:absolute;left:17px;top:38px;bottom:0;width:2px;background:var(--line);}
   .steps>li:last-child::after{display:none;}
-  .steps h4{margin:5px 0 5px;font-size:15.5px;font-family:"Noto Sans JP",sans-serif;}
+  .steps h4{margin:5px 0 5px;font-size:15.5px;font-family:"Noto Sans JP";}
   .steps p{font-size:14px;color:var(--ink-soft);}
   .url-box{display:inline-block;background:var(--sage-wash);border:1px solid var(--sage-med);border-radius:8px;
-    padding:6px 14px;font-family:"SFMono-Regular",Consolas,monospace;font-size:14px;color:var(--sage-dark);font-weight:700;
-    margin-bottom:4px;word-break:break-all;}
-  .kbd{background:#f1ece2;border:1px solid var(--line);border-radius:6px;padding:1px 7px;
-    font-family:"SFMono-Regular",Consolas,monospace;font-size:12.5px;color:var(--ink);}
+    padding:6px 14px;font-family:"SFMono-Regular",Consolas,monospace;font-size:14px;color:var(--sage-dark);font-weight:700;word-break:break-all;}
+  .kbd{background:#f1ece2;border:1px solid var(--line);border-radius:6px;padding:1px 7px;font-family:"SFMono-Regular",Consolas,monospace;font-size:12.5px;}
   code{background:#f1ece2;border-radius:5px;padding:1px 6px;font-size:13px;}
+
+  /* flow7 */
+  .flow7{display:flex;align-items:stretch;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:6px;}
+  .fnode{flex:1 1 0;min-width:150px;border:2px solid var(--line);border-radius:12px;padding:16px;text-align:center;background:#fff;}
+  .fnode.db{border-color:var(--sage-med);background:var(--sage-wash);}
+  .fnode.cc{border-color:var(--sage);}
+  .fnode .ico{font-size:27px;}
+  .fnode .t{font-weight:700;margin-top:6px;font-size:14.5px;}
+  .fnode .d{font-size:12px;color:var(--ink-soft);margin-top:3px;line-height:1.6;}
+  .farrow{display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--sage);font-weight:700;min-width:74px;}
+  .farrow .a{font-size:22px;} .farrow .l{font-size:11.5px;line-height:1.4;}
 
   /* callout */
   .callout{border-radius:12px;padding:15px 18px;margin-top:14px;border:1px solid;font-size:14px;}
@@ -121,19 +136,13 @@
   .callout.info{background:var(--blue-bg);border-color:#c5dbf2;} .callout.info b{color:var(--blue);}
   .callout.safe{background:var(--ok-bg);border-color:#cbe6d6;} .callout.safe b{color:var(--ok);}
 
-  /* todo */
-  .todo{list-style:none;padding:0;margin:0;}
-  .todo li{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--line);font-size:14.5px;}
-  .todo li:last-child{border-bottom:none;}
-  .todo .chk{flex:0 0 22px;width:22px;height:22px;border:2px solid var(--sage);border-radius:6px;}
-
   footer{margin-top:50px;text-align:center;color:var(--ink-soft);font-size:12.5px;border-top:1px solid var(--line);padding-top:22px;}
 
   @media(max-width:640px){
     header.hero h1{font-size:23px;}
-    .methods{grid-template-columns:1fr;}
-    table{font-size:12.5px;} th,td{padding:8px 9px;}
-    tbody td:first-child{width:auto;}
+    .methods,.vs-grid{grid-template-columns:1fr;}
+    table{font-size:12.5px;} th,td{padding:8px 9px;} tbody td:first-child{width:auto;}
+    .concept-arrow{transform:rotate(90deg);}
   }
 </style>
 </head>
@@ -142,7 +151,7 @@
 <header class="hero">
   <div class="badge">実務者向け ／ トークン方式メイン</div>
   <h1>Notion <span class="x">×</span> Claude Code<br>連携ガイド</h1>
-  <p>2つの接続方式の「できる／できない」と、トークン方式の具体セットアップ</p>
+  <p>Notionの基礎から、トークン方式の接続、議事録×プロジェクトの実務フローまで</p>
   <div class="meta">KINO BIM ／ 2026-06-06</div>
 </header>
 
@@ -158,14 +167,85 @@
 
   <!-- 1 -->
   <section>
-    <div class="sec-head"><div class="sec-num">1</div><h2>接続方式は2つ</h2></div>
+    <div class="sec-head"><div class="sec-num">1</div><h2>Notionってなに？（基礎）</h2></div>
+    <div class="card">
+      <p>NotionはExcelに似ていますが、<strong>考え方が1つ違います</strong>。ここを押さえると一気に分かります。</p>
+      <div class="vs-grid">
+        <div class="vs-card excel">
+          <h4>📊 Excel</h4>
+          <div class="cellgrid"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+          <div class="note"><strong>セル</strong>に値を入れる。1マス＝1つの値。</div>
+        </div>
+        <div class="vs-card notion">
+          <h4>📦 Notion</h4>
+          <div class="nbox" style="box-shadow:none;margin-top:0;">
+            <div class="nbox-ttl">📄 A邸 確認申請</div>
+            <div class="prop"><span class="k">担当</span><span class="chip">小嶋</span></div>
+            <div class="prop"><span class="k">資料</span><span class="chip file">PDF</span> <span class="chip file">IFC</span></div>
+          </div>
+          <div class="note">1件＝<strong>1つの「箱」（ページ）</strong>。開けると中に本文も情報も入る。</div>
+        </div>
+      </div>
+
+      <h3 class="mini">考え方は3ステップ</h3>
+      <div class="concept-row">
+        <div class="concept-step">
+          <div class="ico">📦</div><div class="t">① 箱（ページ）</div>
+          <div class="d">1件の情報を入れる入れ物。開ける。</div>
+        </div>
+        <div class="concept-arrow">→</div>
+        <div class="concept-step">
+          <div class="ico">🗄️</div><div class="t">② データベース</div>
+          <div class="d">箱が集まったもの。表に見えるが各行は箱。</div>
+        </div>
+        <div class="concept-arrow">→</div>
+        <div class="concept-step">
+          <div class="ico">🔗</div><div class="t">③ ひも付け（リレーション）</div>
+          <div class="d">データベース同士を線でつなぐ。</div>
+        </div>
+      </div>
+
+      <h3 class="mini">箱の中の「プロパティ」に何でも入る</h3>
+      <p class="muted" style="margin-bottom:10px;">プロパティ＝箱が持つ決まった情報欄。種類を選んで持たせられます。</p>
+      <div class="nbox">
+        <div class="nbox-ttl">📄 B邸 構造データ一式</div>
+        <div class="prop"><span class="k">URL</span><span class="chip url">https://… 共有リンク</span></div>
+        <div class="prop"><span class="k">ファイル</span><span class="chip file">構造図.PDF</span> <span class="chip file">model.IFC（BIMデータ）</span></div>
+        <div class="prop"><span class="k">日付</span><span class="chip">2026/06/06</span></div>
+        <div class="prop"><span class="k">ステータス</span><span class="chip">進行中</span></div>
+        <div class="prop"><span class="k">プロジェクト</span><span class="chip rel">🔗 B邸（プロジェクトDBへひも付け）</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <div class="sec-head"><div class="sec-num">2</div><h2>何に使う？（具体例）</h2></div>
+    <div class="card">
+      <p>例えば、<strong>親会社NCNや協力会社の資料を一元管理するデータベース</strong>。各箱＝1案件／1資料、プロパティに必要な情報をぶら下げます。</p>
+      <div class="nbox">
+        <div class="nbox-ttl">🗄️ 資料データベース（例）</div>
+        <div class="prop"><span class="k">案件A</span><span class="chip url">URL</span> <span class="chip file">PDF</span> <span class="chip file">IFC</span> <span class="chip">担当・日付</span></div>
+        <div class="prop"><span class="k">案件B</span><span class="chip url">URL</span> <span class="chip file">PDF</span> <span class="chip rel">🔗 協力会社</span></div>
+        <div class="prop"><span class="k">案件C</span><span class="chip file">IFC</span> <span class="chip">ステータス</span> <span class="chip rel">🔗 プロジェクト</span></div>
+      </div>
+      <div class="callout warn" style="margin-top:18px;">
+        <b>⏱ 手作業だと大変 → AIと繋げば一瞬</b>
+        箱を1つずつ作り、URL・PDF・IFCを入れ、ひも付けして、更新し続ける…手作業だと<strong>何時間もかかる</strong>作業です。
+        <strong>Claude Codeを接続すれば</strong>、箱の作成・情報入力・ひも付け・更新を<strong>まとめて自動化</strong>できます。
+      </div>
+      <p class="muted" style="margin-top:12px;">※ この「繋ぐ」ための入口が、次からの<strong>接続設定</strong>です。</p>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <div class="sec-head"><div class="sec-num">3</div><h2>接続方式は2つ</h2></div>
     <div class="card">
       <p class="verdict">結論：作り込む／自動化するなら<strong>トークン方式</strong>が本命。</p>
       <p style="margin-top:12px;">サッと試すだけなら<strong>コネクタ方式</strong>（ログイン承認のみ）。Claude Codeで継続的に読み書き・自動化するなら<strong>トークン方式</strong>（内部インテグレーション）。今吉さんの使い方は後者です。</p>
       <table>
-        <thead>
-          <tr><th class="axis">観点</th><th>コネクタ方式（OAuth）</th><th class="col-token">トークン方式（内部インテグレーション）</th></tr>
-        </thead>
+        <thead><tr><th>観点</th><th>コネクタ方式（OAuth）</th><th class="col-token">トークン方式（内部インテグレーション）</th></tr></thead>
         <tbody>
           <tr><td>セットアップ</td><td>ログインして許可するだけ</td><td class="token">インテグレーション作成＋トークン発行</td></tr>
           <tr><td>鍵（トークン）の扱い</td><td>手で扱わない（自動）</td><td class="token">自分で発行・保管（<b>実質1回</b>表示）</td></tr>
@@ -181,58 +261,46 @@
     </div>
   </section>
 
-  <!-- 2 -->
+  <!-- 4 -->
   <section>
-    <div class="sec-head"><div class="sec-num">2</div><h2>それぞれの「できる／できない」</h2></div>
+    <div class="sec-head"><div class="sec-num">4</div><h2>それぞれの「できる／できない」</h2></div>
     <div class="methods">
       <div class="method basic">
         <span class="tag">サッと試す</span>
         <h3>コネクタ方式（OAuth）</h3>
-        <div class="can">
-          <b>⭕ できる</b>
-          <ul>
-            <li>ログイン承認だけで即接続、鍵管理ゼロ</li>
-            <li>接続／解除がGUIで完結、最速で試せる</li>
-            <li>Claude.ai／Claude Code に標準搭載</li>
-          </ul>
-        </div>
-        <div class="cannot">
-          <span class="cannot-b">❌ できない・不向き</span>
-          <ul>
-            <li>権限を細かく絞れない</li>
-            <li>自前スクリプト・常駐処理に組み込みにくい</li>
-            <li>範囲が承認者の閲覧権に連動（意図せず広く／狭く）</li>
-          </ul>
-        </div>
+        <div class="can"><b>⭕ できる</b><ul>
+          <li>ログイン承認だけで即接続、鍵管理ゼロ</li>
+          <li>接続／解除がGUIで完結、最速で試せる</li>
+          <li>Claude.ai／Claude Code に標準搭載</li>
+        </ul></div>
+        <div class="cannot"><span class="cannot-b">❌ できない・不向き</span><ul>
+          <li>権限を細かく絞れない</li>
+          <li>自前スクリプト・常駐処理に組み込みにくい</li>
+          <li>範囲が承認者の閲覧権に連動（意図せず広く／狭く）</li>
+        </ul></div>
       </div>
       <div class="method best">
         <span class="tag">★ 本命</span>
         <h3>トークン方式（内部インテグレーション）</h3>
-        <div class="can">
-          <b>⭕ できる</b>
-          <ul>
-            <li>読取／挿入／更新を<strong>最小権限で設計</strong></li>
-            <li>接続したページ/DBだけに<strong>スコープ厳密固定</strong></li>
-            <li><strong>1本のトークン</strong>で自動化・常駐・他ツール連携</li>
-            <li>ワークスペース単位で管理・監査しやすい</li>
-          </ul>
-        </div>
-        <div class="cannot">
-          <span class="cannot-b">❌ できない・注意</span>
-          <ul>
-            <li>トークンは作成時に<strong>実質1回しか表示されない</strong>（漏洩＝再発行）</li>
-            <li>使わせたいページを1つずつ「接続」する初期手間</li>
-            <li>トークンは強力な認証鍵。<strong>GitHub等に絶対貼らない</strong></li>
-            <li>多人数配布より単一運用向き</li>
-          </ul>
-        </div>
+        <div class="can"><b>⭕ できる</b><ul>
+          <li>読取／挿入／更新を<strong>最小権限で設計</strong></li>
+          <li>接続したページ/DBだけに<strong>スコープ厳密固定</strong></li>
+          <li><strong>1本のトークン</strong>で自動化・常駐・他ツール連携</li>
+          <li>ワークスペース単位で管理・監査しやすい</li>
+        </ul></div>
+        <div class="cannot"><span class="cannot-b">❌ できない・注意</span><ul>
+          <li>トークンは作成時に<strong>実質1回しか表示されない</strong>（漏洩＝再発行）</li>
+          <li>使わせたいページを1つずつ「接続」する初期手間</li>
+          <li>トークンは強力な認証鍵。<strong>GitHub等に絶対貼らない</strong></li>
+          <li>多人数配布より単一運用向き</li>
+        </ul></div>
       </div>
     </div>
   </section>
 
-  <!-- 3 -->
+  <!-- 5 -->
   <section>
-    <div class="sec-head"><div class="sec-num">3</div><h2>トークン方式 セットアップ手順</h2></div>
+    <div class="sec-head"><div class="sec-num">5</div><h2>トークン方式 セットアップ手順</h2></div>
     <div class="card">
       <p style="margin-bottom:6px;">入口（ここから作成）：</p>
       <div class="url-box">https://www.notion.so/my-integrations</div>
@@ -242,7 +310,7 @@
         <li><h4>基本情報を設定</h4><p><strong>名前</strong>（例：<code>KINO-CC</code>）／<strong>関連ワークスペース</strong>を選択／<strong>種類＝内部</strong>。</p></li>
         <li><h4>権限（Capabilities）を設定</h4><p>コンテンツを <strong>読む・更新・挿入</strong> をON。ユーザー情報は不要ならOFF。</p></li>
         <li><h4>シークレットをコピー</h4><p>送信 → <strong>「内部インテグレーションシークレット」</strong>（<code>ntn_…</code> または <code>secret_…</code>）をコピー。</p></li>
-        <li><h4>すぐ控える（実質1回表示）</h4><p>表示は実質1回きり。<strong>パスワード管理／専用ページにすぐ控える</strong>。紛失＝再発行。</p></li>
+        <li><h4>すぐNotionに控える（実質1回表示）</h4><p>表示は実質1回きり。<strong>Notionの安全なページ／パスワード管理にすぐ保存</strong>。紛失＝再発行。</p></li>
         <li><h4>使わせたいページを「接続」</h4><p>対象ページ/DBを開く → 右上 <span class="kbd">•••</span> →「<strong>接続</strong>」→ 作ったインテグレーションを追加。<strong>これをしないとAIは中を見られない</strong>（＝安全の要）。</p></li>
         <li><h4>CC側にトークンを設定</h4><p>Claude Code側にトークンを登録すれば、接続したページを読み書き可能に。</p></li>
       </ol>
@@ -253,9 +321,9 @@
     </div>
   </section>
 
-  <!-- 4 -->
+  <!-- 6 -->
   <section>
-    <div class="sec-head"><div class="sec-num">4</div><h2>権限（Capabilities）の中身</h2></div>
+    <div class="sec-head"><div class="sec-num">6</div><h2>権限（Capabilities）の中身</h2></div>
     <div class="card">
       <table>
         <thead><tr><th>権限</th><th>できること</th><th>推奨</th></tr></thead>
@@ -274,13 +342,43 @@
     </div>
   </section>
 
-  <!-- 5 -->
+  <!-- 7 -->
   <section>
-    <div class="sec-head"><div class="sec-num">5</div><h2>運用メモ（合意事項）</h2></div>
+    <div class="sec-head"><div class="sec-num">7</div><h2>実務フロー：議事録 × プロジェクト × Claude Code</h2><span class="star">★ ここが本番</span></div>
+    <div class="card">
+      <p>今吉さんはすでに課金済み。まず作るとよいのが<strong>「議事録データベース」</strong>です。これを<strong>プロジェクトとひも付ける</strong>と、Claude Codeが効いてきます。</p>
+
+      <div class="flow7" style="margin-top:16px;">
+        <div class="fnode db"><div class="ico">📝</div><div class="t">議事録DB</div><div class="d">打合せごとに1箱。決定事項・宿題を記録</div></div>
+        <div class="farrow"><span class="a">🔗</span><span class="l">ひも付け</span></div>
+        <div class="fnode db"><div class="ico">🗂️</div><div class="t">プロジェクトDB</div><div class="d">案件ごとに1箱。議事録がぶら下がる</div></div>
+        <div class="farrow"><span class="a">←</span><span class="l">自動で読む</span></div>
+        <div class="fnode cc"><div class="ico">🤖</div><div class="t">Claude Code</div><div class="d">案件を指定 → 紐づく議事録を自動把握</div></div>
+      </div>
+
+      <h3 class="mini">この流れで何が起きるか</h3>
+      <ol class="steps">
+        <li><h4>議事録DBを作る</h4><p>打合せのたびに1箱（タイトル・日付・決定事項・宿題）を追加。</p></li>
+        <li><h4>プロジェクトとひも付ける</h4><p>各議事録を、該当案件（プロジェクトDBの箱）にリレーションで接続。</p></li>
+        <li><h4>Claude Codeに案件を指定</h4><p>「この案件の続きやって」と言うだけ。</p></li>
+        <li><h4>議事録を自動で読む</h4><p>CCがひも付いた議事録を全部読み、<strong>「何が決まって、どこまで進んだか」を把握</strong>。</p></li>
+        <li><h4>続きの作業ができる</h4><p>要約・次のタスク出し・資料作成・図面準備…<strong>毎回説明し直さなくていい</strong>。</p></li>
+      </ol>
+
+      <div class="callout safe">
+        <b>💡 メリット</b>
+        議事録とプロジェクトが繋がっていると、AIに毎回背景を説明する手間が消えます。<strong>「案件名を言えば、過去の経緯ごと分かっている」</strong>状態が作れます。
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section>
+    <div class="sec-head"><div class="sec-num">8</div><h2>運用メモ（合意事項）</h2></div>
     <div class="card">
       <div class="callout warn">
-        <b>① トークンは1回表示 → 必ず控える</b>
-        機密のため共有ページには載せず、<strong>パスワード管理で保管</strong>。漏洩したら即無効化＆再発行。
+        <b>① トークンは1回表示 → 必ずNotionに控える</b>
+        機密のため共有ページには載せず、<strong>パスワード管理／専用ページで保管</strong>。漏洩したら即無効化＆再発行。
       </div>
       <div class="callout info">
         <b>② 人を足すときはゲスト</b>
@@ -290,25 +388,15 @@
         <b>③ 勝手にユーザーは増やさない／触れるのは共有ページだけ</b>
         AIも人も勝手に増やさない。AIが触れるのは明示的に接続したページのみ。
       </div>
-    </div>
-  </section>
-
-  <!-- 6 -->
-  <section>
-    <div class="sec-head"><div class="sec-num">6</div><h2>今やること（今吉さん）</h2></div>
-    <div class="card">
-      <ul class="todo">
-        <li><span class="chk"></span><div>招待メールから<strong>Notionにログイン</strong></div></li>
-        <li><span class="chk"></span><div>この連携ガイドページが読めるか確認（＝接続成功の合図）</div></li>
-        <li><span class="chk"></span><div>追加メンバーは<strong>ゲスト</strong>で</div></li>
-        <li><span class="chk"></span><div>トークンの保管場所を<strong>小嶋と確認</strong></div></li>
-      </ul>
+      <div class="callout info" style="background:#fff;border-color:var(--line);">
+        <b style="color:var(--sage-dark);">▶ 今吉さんの次の一歩</b>
+        ① 招待メールからログイン　②（おすすめ）議事録DBを作る　③ プロジェクトとひも付け　④ トークン保管場所を小嶋と確認
+      </div>
     </div>
   </section>
 
   <footer>
-    Notion × Claude Code 連携ガイド（トークン方式メイン）<br>
-    株式会社KINO BIM ／ 2026-06-06
+    Notion × Claude Code 連携ガイド ／ 株式会社KINO BIM ／ 2026-06-06
   </footer>
 
 </div>
