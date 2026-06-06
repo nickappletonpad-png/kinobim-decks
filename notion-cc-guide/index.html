@@ -63,6 +63,15 @@
   .cellgrid span{border:1px solid var(--line);background:#faf8f3;height:20px;border-radius:3px;}
   .vs-card .note{font-size:13px;color:var(--ink-soft);margin-top:11px;}
 
+  /* tier (workspace > teamspace > page) */
+  .tier{margin-top:6px;}
+  .tier-row{border:1px solid var(--line);border-radius:10px;padding:11px 14px;margin-bottom:8px;
+    font-weight:700;font-size:14.5px;display:flex;flex-direction:column;gap:2px;}
+  .tier-row span{font-weight:400;font-size:12.5px;color:var(--ink-soft);}
+  .tier-row.ws{background:#eef3ec;border-color:var(--sage-med);}
+  .tier-row.ts{background:#f3efe7;margin-left:24px;}
+  .tier-row.pg{background:#faf8f3;margin-left:48px;}
+
   /* concept steps */
   .concept-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;}
   .concept-step{flex:1 1 0;min-width:140px;background:var(--sage-wash);border:1px solid var(--sage-med);
@@ -186,6 +195,14 @@
           <div class="note">1件＝<strong>1つの「箱」（ページ）</strong>。開けると中に本文も情報も入る。</div>
         </div>
       </div>
+
+      <h3 class="mini">入れ物は3階層（大きい順）</h3>
+      <div class="tier">
+        <div class="tier-row ws">🏢 ワークスペース<span>会社まるごとの最上位の箱。＝<strong>課金はここ単位</strong>（1社1つでOK）</span></div>
+        <div class="tier-row ts">👥 チームスペース<span>WSの中の部署/チーム区画。<strong>いくつでも・追加課金なし</strong></span></div>
+        <div class="tier-row pg">📦 ページ（箱）／データベース<span>実際の中身。ここに情報を入れる</span></div>
+      </div>
+      <p class="muted" style="margin-top:4px;">※「新しいワークスペースを作成」で課金（プラン選択）画面が出るのは仕様。WSを増やす＝新しい課金単位を作ることだからです。</p>
 
       <h3 class="mini">考え方は3ステップ</h3>
       <div class="concept-row">
@@ -387,6 +404,13 @@
       <div class="callout safe">
         <b>③ 勝手にユーザーは増やさない／触れるのは共有ページだけ</b>
         AIも人も勝手に増やさない。AIが触れるのは明示的に接続したページのみ。
+      </div>
+      <div class="callout info">
+        <b>▶ お試しはどこに作る？（新WS vs 既存WS内）</b>
+        課金（プラン選択）画面が出るのは仕様（ワークスペース＝課金単位）。今吉さんは既存WSのオーナーなので——<br>
+        <strong>A. 既存WS内に専用チームスペース（推奨）</strong>：追加課金なし・既存資料と同居・そのまま本番化できる<br>
+        <strong>B. 新WSで隔離</strong>：完全分離できるが既存資料は持ち込めず移行の手間。課金が気になるなら「フリープラン（無料）」を選べば0円<br>
+        ※ トークン方式は「接続したページだけ」に効くので、<strong>A＋専用チームスペースだけAIに接続</strong>が、隔離と低コストの両立で一番おすすめ
       </div>
       <div class="callout info" style="background:#fff;border-color:var(--line);">
         <b style="color:var(--sage-dark);">▶ 今吉さんの次の一歩</b>
